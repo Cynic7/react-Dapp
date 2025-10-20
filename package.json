@@ -28,13 +28,9 @@
     "test-t": "npx hardhat test test/Token.js",
     "test-e": "npx hardhat test test/Exchange.js",
     "node": "npx hardhat node",
+    "deploy": "npx hardhat run --network localhost scripts/deploy.js",
+    "seed": "npx hardhat run --network localhost scripts/seed.js",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

@@ -1,32 +1,28 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+async function main(){
+    const Token = await ethers.getContractFactory('Token')
+    const Exchange = await ethers.getContractFactory('Exchange')
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
+    const accounts = await ethers.getSigners();
 
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+    const QHY = await Token.deploy('QiHuoYue','QHY','1000000');
+    await QHY.deployed();
+    console.log('QHY部署地址：'+QHY.address);
 
-  await lock.waitForDeployment();
+    const mETH = await Token.deploy('mETH','mETH','1000000');
+    await mETH.deployed();
+    console.log('mETH部署地址：'+mETH.address);
 
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+    const mDAI = await Token.deploy('mDAI','mDAI','1000000');
+    await mDAI.deployed();
+    console.log('mDAI部署地址：'+mDAI.address);
+    
+    const exchange = await Exchange.deploy(accounts[1].address,1);
+    await exchange.deployed();
+    console.log('exchange部署地址：'+exchange.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

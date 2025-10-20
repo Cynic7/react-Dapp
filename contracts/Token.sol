@@ -38,7 +38,7 @@ contract Token {
     }
 
     function _transfer(address _from, address _to, uint256 _value) internal {
-        require(balanceOf[_from] >= _value, "Not enough money");
+        require(balanceOf[_from] >= _value, "transfer:Not enough money");
         require(_to != address(0), "Invalid address");
         require(_from != address(0), "Invalid address");
 
@@ -51,7 +51,7 @@ contract Token {
         address _spender,
         uint256 _value
     ) public returns (bool success) {
-        require(balanceOf[msg.sender] > _value, "Not enough money");
+        require(balanceOf[msg.sender] >= _value, "approve:Not enough money");
         require(_spender != address(0), "Invalid address");
 
         allowance[msg.sender][_spender] += _value;
