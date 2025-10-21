@@ -21,8 +21,10 @@ export const blockchain = (state = {}, action) => {
 //代币信息
 export const tokens = (state = {}, action)=>{
     switch (action.type) {
+    //所有代币
     case "TOKEN_LOADED":
       return action.tokens;
+    
     default:
       return state;
   }
@@ -36,6 +38,13 @@ export const exchange = (state = {}, action)=>{
         ...state,
         contract:action.contract,
       }
+    //当前交易的代币
+    case "TOKEN_EXCHANGE_LOADED":
+      return {
+        ...state,
+        currentToken:action.currentToken,
+      }
+
     default:
       return state;
   }

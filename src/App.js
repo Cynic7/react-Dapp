@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import config from './config.json'
 import './App.css';
 import Navbar from './component/Navbar.js'
+import Market from './component/Market.js'
+
 import interactions from './store/interactions.js'
 const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount } = interactions;
 
@@ -17,13 +19,21 @@ function App() {
     const chainId = await loadBlockchain()
     let myConfig = config[chainId];
     console.log(chainId);
-    loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
-    loadExchange(myConfig.exchange.address)
+    try{
+      loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
+      loadExchange(myConfig.exchange.address)
+    }catch(e){
+      console.log(e);
+    }
 
-    window.ethereum.on('accountsChanged' , ()=>{
+    window.ethereum.on('accountsChanged',()=>{
       console.log('账号变更');
       loadAccount()
-    }  )
+    })
+
+    window.ethereum.on('chainChanged',()=>{
+      window.location.reload()
+    })
 
     return;
     
@@ -55,7 +65,7 @@ function App() {
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>
 
-          {/* Markets */}
+          <Market />
 
           {/* Balance */}
 

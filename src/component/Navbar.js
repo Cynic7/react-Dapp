@@ -3,21 +3,29 @@ import logo from '../assets/logo.png'
 import eth from '../assets/eth.svg'
 import Blockies  from 'react-blockies'
 import { useState,useEffect } from 'react'
+import config from '../config.json'
 import interactions from '../store/interactions.js'
 const { loadAccount } = interactions;
 
 const Navbar = () => {
   let {account,balance,chainId} = useSelector(state=>state.blockchain)
 
-  // useEffect(()=>{
-  //   loadAccount()
-  // },[])
+  useEffect(()=>{
+    loadAccount()
+  },[])
   const connectHandler = async()=>{
     loadAccount()
   }
-  console.log(chainId);
-  const changeNetwork = ()=>{
-
+  // console.log(chainId);
+  const changeNetwork = (e)=>{
+    console.log(e.target.value);
+    try{
+      window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:e.target.value}]}).catch(e=>{
+        alert('请先在你的钱包中添加该网络')
+      })
+    }catch(e){
+      alert('请先在你的钱包中添加该网络')
+    }
   }
   return(
     <div className='exchange__header grid'>
@@ -34,6 +42,7 @@ const Navbar = () => {
             <option value=""></option>
             <option value="0x7a69">Localhost</option>
             <option value="0x2A">Kovan</option>
+            <option value='0xaa36a7'>Sepolia</option>
           </select>
         }
         
@@ -45,7 +54,7 @@ const Navbar = () => {
           :''
         }
         {account? (
-          <a>
+          <a href={config[chainId] ? config[chainId].explorerURL+'/address/'+account : '#'} target='_blank'>
             {account.slice(0,5) + '...' + account.slice(38,42)}
             <Blockies
               seed={account}

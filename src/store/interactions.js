@@ -24,12 +24,20 @@ export default {
     },
     loadToken: async(address)=>{
         let tokens = []
+        console.log(address);
         address.forEach(async(item)=>{
             const contract = new ethers.Contract(item, token_abi , provider)
+            console.log(contract);
             let symbol = await contract.symbol()
             tokens.push({symbol,contract})
+            console.log(tokens);
         })
+        console.log(333,tokens);
         dispatch({type:'TOKEN_LOADED',tokens });
+    },
+    //当前交易对象
+    loadToken_Exchange: (currentToken)=>{
+        dispatch({type:'TOKEN_EXCHANGE_LOADED',currentToken });
     },
     loadExchange: async(address)=>{
         let tokens = []
