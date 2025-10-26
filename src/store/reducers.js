@@ -31,7 +31,7 @@ export const tokens = (state = {}, action)=>{
 }
 
 //交易所信息
-export const exchange = (state = {}, action)=>{
+export const exchange = (state = { event:[], allOrders:[] }, action)=>{
     switch (action.type) {
     case "EXCHANGE_LOADED":
       return {
@@ -44,6 +44,95 @@ export const exchange = (state = {}, action)=>{
         ...state,
         currentToken:action.currentToken,
       }
+    //当前交易的代币
+    case "EXCHANGE_BALANCE_LOADED":
+      return {
+        ...state,
+        balance:action.balance,
+      }
+    case "TOKEN_BALANCE_LOADED":
+      state.currentToken[0].balance = action.balance_token[0]
+      state.currentToken[1].balance = action.balance_token[1]
+      return {
+        ...state,
+      }
+    //进行中
+    case "TRANSFER_REQUEST":
+      return {
+        ...state,
+        status:{
+          type:'Transfer',
+          pendding:true,
+          success:false,
+        }
+      }
+    //成功
+    case "TRANSFER_SUCCESS":
+      return {
+        ...state,
+        status:{
+          type:'Transfer',
+          pendding:false,
+          success:true,
+        },
+        event:[action.event,...state.event]
+      }
+    //失败
+    case "TRANSFER_FAIL":
+      return {
+        ...state,
+        status:{
+          type:'Transfer',
+          pendding:false,
+          success:false,
+          isError:true,
+        },
+      }
+    case "MAKEORDER_REQUEST":
+      return {
+        ...state,
+        status:{
+          type:'MakeOrder',
+          pendding:true,
+          success:false,
+        }
+      }
+    case "MAKEORDER_SUCCESS":
+     //去重
+      let index = state.allOrders.findIndex(item=>{
+        return item.orderId.toString() == action.order.orderId.toString()
+      }
+      )
+      if(index > -1){
+        return state
+      }
+      return {
+        ...state,
+        status:{
+          type:'MakeOrder',
+          pendding:false,
+          success:true,
+        },
+        event:[action.event,...state.event],
+        allOrders:[...state.allOrders,action.order]
+      }
+      case "MAKEORDER_FAIL":
+      return {
+        ...state,
+        status:{
+          type:'MakeOrder',
+          pendding:false,
+          success:false,
+          isError:true,
+        }
+      }
+      case "ALL_ORDER_LOAD":
+      return {
+        ...state,
+        allOrders:action.allOrders
+      }
+
+
 
     default:
       return state;

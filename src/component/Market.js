@@ -5,9 +5,7 @@ import { useEffect } from 'react'
 
 const Market = () => {
   const tokens = useSelector(state=>state.tokens)
-    console.log(22,tokens);
   useEffect(()=>{
-    console.log(11,tokens);
     selectChange({target:{value:'QHY,mETH'}})
   },[tokens])
 

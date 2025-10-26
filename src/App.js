@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
 import { ethers } from 'ethers';
-import exchange_abi from './abi/exchange_abi.json'
 import token_abi from './abi/token_abi.json'
 import { useDispatch } from 'react-redux'
 import config from './config.json'
 import './App.css';
 import Navbar from './component/Navbar.js'
 import Market from './component/Market.js'
+import Balance from './component/Balance.js'
+import Order from './component/Order.js'
+import OrderBook from './component/OrderBook.js'
 
 import interactions from './store/interactions.js'
-const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount } = interactions;
+const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount,listenEvent } = interactions;
 
 function App() {
   
@@ -21,7 +23,9 @@ function App() {
     console.log(chainId);
     try{
       loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
-      loadExchange(myConfig.exchange.address)
+      const exchange = loadExchange(myConfig.exchange.address)
+        //监听事件
+      listenEvent(exchange)
     }catch(e){
       console.log(e);
     }
@@ -67,9 +71,9 @@ function App() {
 
           <Market />
 
-          {/* Balance */}
+          <Balance />
 
-          {/* Order */}
+          <Order />
 
         </section>
         <section className='exchange__section--right grid'>
@@ -80,7 +84,7 @@ function App() {
 
           {/* Trades */}
 
-          {/* OrderBook */}
+          <OrderBook />
 
         </section>
       </main>
