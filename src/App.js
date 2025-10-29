@@ -9,6 +9,10 @@ import Market from './component/Market.js'
 import Balance from './component/Balance.js'
 import Order from './component/Order.js'
 import OrderBook from './component/OrderBook.js'
+import PriceChart from './component/PriceChart.js'
+import Trades from './component/Trades.js'
+import Transactions from './component/Transactions.js'
+import Alert from './component/Alert.js'
 
 import interactions from './store/interactions.js'
 const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount,listenEvent } = interactions;
@@ -38,23 +42,6 @@ function App() {
     window.ethereum.on('chainChanged',()=>{
       window.location.reload()
     })
-
-    return;
-    
-    const network = await provider.getNetwork()
-    console.log(network);
-    console.log(window.ethereum);
-    console.log(token_abi);
-
-    //拿到QHY代币合同
-    const QHY = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3',token_abi,provider)
-
-    console.log(QHY.address);
-
-    const name = await QHY.name()
-
-    console.log(name);
-    console.log(ethers.utils.formatEther(await QHY.balanceOf(accounts[0])) );
   }
 
   useEffect(()=>{
@@ -78,18 +65,18 @@ function App() {
         </section>
         <section className='exchange__section--right grid'>
 
-          {/* PriceChart */}
+          <PriceChart />
 
-          {/* Transactions */}
+          <Transactions />
 
-          {/* Trades */}
+          <Trades />
 
           <OrderBook />
 
         </section>
       </main>
 
-      {/* Alert */}
+      <Alert />
 
     </div>
   );

@@ -8,6 +8,8 @@ const tokens = (n) => {
   return ethers.utils.parseUnits(n.toString(), "ether");
 };
 
+const sleep = (time)=>new Promise(resolve=>setTimeout(resolve,time*1000))
+
 async function main(){
     console.log(config);
     let transaction,result;
@@ -24,29 +26,80 @@ async function main(){
     let exchange = await ethers.getContractAt('Exchange',config[chainId].exchange.address);
     
 
+    //user1 存入 100 QHY
     transaction = await QHY.connect(user1).approve(exchange.address,tokens(1000));
     result = await transaction.wait();
 
     transaction = await exchange.connect(user1).depositToken(QHY.address,tokens(100));
     await transaction.wait();
+
+    //user1 存入 100 mETH
+    transaction = await mETH.connect(user1).approve(exchange.address,tokens(1000));
+    result = await transaction.wait();
+
+    transaction = await exchange.connect(user1).depositToken(mETH.address,tokens(100));
+    await transaction.wait();
+
+    //user1 转账给user2 1000 QHY
+    transaction = await QHY.connect(user1).transfer(user2.address,tokens(1000))
+    await transaction.wait();
+
+    //user2 存入 100 QHY
+    transaction = await QHY.connect(user2).approve(exchange.address,tokens(1000));
+    result = await transaction.wait();
+    transaction = await exchange.connect(user2).depositToken(QHY.address,tokens(100));
+    await transaction.wait();
+
+    //user1 转账给user2 1000 mETH
+    transaction = await mETH.connect(user1).transfer(user2.address,tokens(1000))
+    await transaction.wait();
+
+    //user2 存入 100 mETH
+    transaction = await mETH.connect(user2).approve(exchange.address,tokens(1000));
+    result = await transaction.wait();
+    transaction = await exchange.connect(user2).depositToken(mETH.address,tokens(100));
+    await transaction.wait();
+
+    //user1 创建订单
+    for(let i=0;i<10;i++){
+      transaction = await exchange.connect(user1).makeOrder(QHY.address,tokens(i+1),mETH.address,tokens(i*3+1))
+      await transaction.wait();
+      transaction = await exchange.connect(user1).makeOrder(mETH.address,tokens(i+2),QHY.address,tokens(i*2+1))
+      await transaction.wait();
+    }
+
+    sleep(2)
    
+    try{
+      //取消订单
+      transaction = await exchange.connect(user1).cancelOrder(1);
+      await transaction.wait();
+
+      transaction = await exchange.connect(user1).cancelOrder(3);
+      await transaction.wait();
+
+      transaction = await exchange.connect(user1).cancelOrder(5);
+      await transaction.wait();
+
+      //成交订单
+      transaction = await exchange.connect(user1).fillOrder(2);
+      await transaction.wait();
+
+      transaction = await exchange.connect(user2).fillOrder(6);
+      await transaction.wait();
+
+      transaction = await exchange.connect(user2).fillOrder(9);
+      await transaction.wait();
+
+    }catch(e){
+      console.log('503',e);
+    }
+    
+
 
     console.log(await exchange.balanceOf(QHY.address,user1.address));
 
-    // const Exchange = await ethers.getContractFactory('Exchange')
-
-
-    // const QHY = await Token.deploy('QiHuoYue','QHY','1000000');
-    // console.log('QHY部署地址：'+QHY.address);
-
-    // const mETH = await Token.deploy('mETH','mETH','1000000');
-    // console.log('mETH部署地址：'+mETH.address);
-
-    // const mDAI = await Token.deploy('mDAI','mDAI','1000000');
-    // console.log('mDAI部署地址：'+mDAI.address);
-    
-    // const exchange = await Exchange.deploy(accounts[1].address,1);
-    // console.log('exchange部署地址：'+exchange.address);
+  
 }
 
 main().catch((error) => {

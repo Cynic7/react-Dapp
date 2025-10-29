@@ -46,10 +46,10 @@ const Balance = () => {
       alert("请输入数量");
       return;
     }
-    
-    if(status == '存入'){
+
+    if (status == "存入") {
       await depositToken(tokens[index].contract, value, exchange);
-    }else{
+    } else {
       await withdrawToken(tokens[index].contract, value, exchange);
     }
     loadBalance(tokens, account, exchange);

@@ -323,7 +323,7 @@ small {
 	grid-column-end: 13;
 
 	height: 215px;
-	overflow-y: scroll;
+	overflow-y: auto;
 	scrollbar-width: thin;
 }
 
@@ -352,7 +352,7 @@ small {
 	grid-column-end: 13;
 
 	height: 215px;
-	overflow-y: scroll;
+	overflow-y: auto;
 	scrollbar-width: thin;
 }
 
@@ -373,6 +373,14 @@ small {
 .exchange__orderbook--buy tbody tr:hover {
 	background: var(--clr-primary);
 	cursor: pointer;
+}
+
+.exchange__orderbook_content {
+	width: 50%;
+	height: 350px;
+	overflow: auto;
+	padding-right: 15px;
+	scrollbar-width: thin;
 }
 
 /* ------------------------------------------------------ */

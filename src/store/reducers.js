@@ -31,7 +31,7 @@ export const tokens = (state = {}, action)=>{
 }
 
 //交易所信息
-export const exchange = (state = { event:[], allOrders:[] }, action)=>{
+export const exchange = (state = { event:[], allOrders:[],fillOrders:[],status:{} }, action)=>{
     switch (action.type) {
     case "EXCHANGE_LOADED":
       return {
@@ -131,8 +131,54 @@ export const exchange = (state = { event:[], allOrders:[] }, action)=>{
         ...state,
         allOrders:action.allOrders
       }
+      case "CANCEL_ORDER_LOAD":
+      return {
+        ...state,
+        cancelOrders:action.cancelOrders
+      }
 
-
+      case "FILL_ORDER_LOAD":
+      return {
+        ...state,
+        fillOrders:action.fillOrders
+      }
+       case "EXCHANGE_REQUEST":
+      return {
+        ...state,
+        status:{
+          type:action.requestType,
+          pendding:true,
+          success:false,
+        }
+      }
+     case "EXCHANGE_REQUEST_FAIL":
+      return {
+        ...state,
+        status:{
+          type:action.requestType,
+          pendding:false,
+          success:false,
+          isError:true
+        }
+      }
+       case "EXCHANGE_REQUEST_SUCCESS":
+        let nameArr = [
+          {requestType:'CancelOrder',name:'cancelOrders'},
+          {requestType:'FillOrder',name:'fillOrders'}
+        ]
+        let name = nameArr.find(item=>item.requestType == action.requestType)?.name
+        let obj = {
+          ...state,
+          status:{
+            type:action.requestType,
+            pendding:false,
+            success:true,
+          },
+          event:[action.event,...state.event],
+        }
+        obj[name] = [...(state[name] || []),action.order]
+      return obj
+      
 
     default:
       return state;

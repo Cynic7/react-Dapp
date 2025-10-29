@@ -75,10 +75,10 @@ contract Exchange {
 
     //存款
     function depositToken(address tokenAddress, uint256 _value) external {
-        require(tokenAddress != address(0));
+        require(tokenAddress != address(0),'depositToken: no address');
 
         require(
-            Token(tokenAddress).transferFrom(msg.sender, address(this), _value)
+            Token(tokenAddress).transferFrom(msg.sender, address(this), _value),'depositToken: transfer error'
         );
 
         balanceOf[tokenAddress][msg.sender] += _value;
@@ -93,10 +93,10 @@ contract Exchange {
 
     //取款
     function withdrawToken(address tokenAddress, uint256 _value) external {
-        require(tokenAddress != address(0));
-        require(balanceOf[tokenAddress][msg.sender] >= _value);
+        require(tokenAddress != address(0),'withdrawToken: no address');
+        require(balanceOf[tokenAddress][msg.sender] >= _value,'withdrawToken: balanceOf error');
 
-        require(Token(tokenAddress).transfer(msg.sender, _value));
+        require(Token(tokenAddress).transfer(msg.sender, _value),'withdrawToken: transfer error');
 
         balanceOf[tokenAddress][msg.sender] -= _value;
 
@@ -115,7 +115,7 @@ contract Exchange {
         address _tokenGive,
         uint256 _giveValue
     ) external {
-        require(balanceOf[_tokenGive][msg.sender] >= _giveValue);
+        require(balanceOf[_tokenGive][msg.sender] >= _giveValue,'makeOrder: balanceOf error');
 
         orderCount++;
         orders[orderCount] = _Order(
@@ -141,10 +141,10 @@ contract Exchange {
 
     //取消订单
     function cancelOrder(uint256 orderId) external {
-        require(!cancelOrders[orderId]);
+        require(!cancelOrders[orderId],'cancelOrder: orderId error');
 
         _Order storage _order = orders[orderId];
-        require(_order.user == msg.sender, "error order");
+        require(_order.user == msg.sender, 'cancelOrder: user error');
 
         cancelOrders[orderId] = true;
 
@@ -162,10 +162,10 @@ contract Exchange {
     //买下订单
     function fillOrder(uint256 orderId) external {
         //该订单不能被取消
-        require(!cancelOrders[orderId]);
+        require(!cancelOrders[orderId],'fillOrder: cancelOrders.orderId error');
 
         //订单没有被买走
-        require(!fillOrders[orderId]);
+        require(!fillOrders[orderId],'fillOrder: fillOrders.orderId error');
 
         //订单存在
         _Order storage _order = orders[orderId];
@@ -176,11 +176,11 @@ contract Exchange {
 
         //买家的钱足够
         require(
-            balanceOf[_order.tokenGet][msg.sender] >= _order.getValue + feePrice
+            balanceOf[_order.tokenGet][msg.sender] >= _order.getValue + feePrice,'fillOrder: balanceOf error 1'
         );
 
         //创建订单的人钱够
-        require(balanceOf[_order.tokenGive][_order.user] >= _order.giveValue);
+        require(balanceOf[_order.tokenGive][_order.user] >= _order.giveValue,'fillOrder: balanceOf error 2');
 
         //token的映射不更新，因为token都在交易所里，交易所的映射更新即可
         //买家得到这份订单的 tokenGive，失去这份订单的tokenGet

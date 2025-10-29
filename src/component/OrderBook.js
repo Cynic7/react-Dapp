@@ -1,16 +1,21 @@
 import { useSelector } from "react-redux";
 import interactions from "../store/interactions.js";
-import { useState, useRef, useEffect } from "react";
-const { loadAllOrder } = interactions;
+import { useEffect } from "react";
+const { loadAllOrder, fillOrder, loadBalance } = interactions;
 import sort from "../assets/sort.svg";
 import { orderBookSelector } from "../store/selectors.js";
 
 const OrderBook = () => {
   const tokens = useSelector((state) => state.exchange.currentToken);
   const exchange = useSelector((state) => state.exchange.contract);
+  const account = useSelector((state) => state.blockchain.account);
 
   const orderBook = useSelector(orderBookSelector) || undefined;
-  console.log(orderBook);
+
+  const fillOrderHandler = async (order) => {
+    await fillOrder(order);
+    loadBalance(tokens, account, exchange);
+  };
 
   useEffect(() => {
     loadAllOrder(exchange);
@@ -23,6 +28,7 @@ const OrderBook = () => {
       </div>
 
       <div className="flex">
+         <div className="exchange__orderbook_content">
         <table className="exchange__orderbook--sell">
           <caption>卖单</caption>
           <thead>
@@ -41,23 +47,26 @@ const OrderBook = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
+           {/* style={{height:251,overflowY:'auto',scrollbarWidth:'thin'}} */}
+          <tbody style={{maxHeight:251,overflowY:'auto',scrollbarWidth:'thin'}}>
             {orderBook?.sellOrder ? (
-              orderBook?.sellOrder.map((item) => (
-                <tr>
+              orderBook?.sellOrder?.map((item) => (
+                <tr style={{height:28}} key={item.orderId} onClick={() => fillOrderHandler(item)}>
                   <td>{item.token0Value}</td>
-                  <td style={{color:'#F45353'}}>{item.price}</td>
+                  <td style={{ color: "#F45353" }}>{item.price}</td>
                   <td>{item.token1Value}</td>
                 </tr>
               ))
             ) : (
-              <td>2</td>
+              <tr></tr>
             )}
           </tbody>
         </table>
-
+            </div>
         <div className="divider"></div>
+        <div className="exchange__orderbook_content">
 
+       
         <table className="exchange__orderbook--buy">
           <caption>买单</caption>
           <thead>
@@ -76,20 +85,21 @@ const OrderBook = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{maxHeight:251,overflowY:'auto',scrollbarWidth:'thin'}}>
             {orderBook?.buyOrder ? (
-              orderBook?.buyOrder.map((item) => (
-                <tr>
+              orderBook?.buyOrder?.map((item) => (
+                <tr key={item.orderId} onClick={() => fillOrderHandler(item)}>
                   <td>{item.token0Value}</td>
-                  <td style={{color:'#25CE8F'}}>{item.price}</td>
+                  <td style={{ color: "#25CE8F" }}>{item.price}</td>
                   <td>{item.token1Value}</td>
                 </tr>
               ))
             ) : (
-              <td>2</td>
+              <tr></tr>
             )}
           </tbody>
         </table>
+         </div>
       </div>
     </div>
   );

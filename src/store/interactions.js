@@ -51,7 +51,6 @@ export default {
     exchange = contract;
     return contract;
   },
-  fnName: async () => {},
   loadBalance: async (tokens, account, exchange) => {
     let balance_token = [];
     let balance_exchange = [];
@@ -85,6 +84,18 @@ export default {
       let event = args[args.length - 1];
       console.log('MakeOrder');
       dispatch({ type: "MAKEORDER_SUCCESS", event,order:event.args });
+    });
+
+    exchange.on("CancelOrder", (...args) => {
+      let event = args[args.length - 1];
+      console.log('CancelOrder');
+      dispatch({ type: "EXCHANGE_REQUEST_SUCCESS",requestType:'CancelOrder', event, order:event.args });
+    });
+
+    exchange.on("FillOrder", (...args) => {
+      let event = args[args.length - 1];
+      console.log('FillOrder');
+      dispatch({ type: "EXCHANGE_REQUEST_SUCCESS",requestType:'FillOrder', event, order:event.args });
     });
 
   },
@@ -143,11 +154,43 @@ export default {
 
   loadAllOrder: async(exchange)=>{
     const events = await exchange?.queryFilter('MakeOrder',0,'latest')
+    const events_cancel = await exchange?.queryFilter('CancelOrder',0,'latest')
+    const events_fill = await exchange?.queryFilter('FillOrder',0,'latest')
     if(!events)return;
     console.log('events',events);
-    let allOrders = events.map(item=>item.args)
+
+    let allOrders = events?.map(item=>item.args)
+    let cancelOrders = events_cancel?.map(item=>item.args)
+    let fillOrders = events_fill?.map(item=>item.args)
+
     console.log('allOrders',allOrders);
     dispatch({ type: "ALL_ORDER_LOAD",allOrders });
+    dispatch({ type: "CANCEL_ORDER_LOAD",cancelOrders });
+    dispatch({ type: "FILL_ORDER_LOAD",fillOrders });
+
+  },
+  cancelOrder: async(order)=>{
+    dispatch({ type: "EXCHANGE_REQUEST",requestType:'CancelOrder' });
+    try{
+      const signer = await provider.getSigner()
+      let transcation = await exchange.connect(signer).cancelOrder(order.orderId);
+      await transcation.wait();
+
+    }catch(e){
+      dispatch({ type: "EXCHANGE_REQUEST_FAIL",requestType:'CancelOrder'  });
+    }
+
+  },
+  fillOrder: async(order)=>{
+    dispatch({ type: "EXCHANGE_REQUEST",requestType:'FillOrder' });
+    try{
+      const signer = await provider.getSigner()
+      let transcation = await exchange.connect(signer).fillOrder(order.orderId);
+      await transcation.wait();
+
+    }catch(e){
+      dispatch({ type: "EXCHANGE_REQUEST_FAIL",requestType:'FillOrder'  });
+    }
 
   }
   
