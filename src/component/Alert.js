@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { myEventSelector } from "../store/selectors.js";
+import config from "../config.json";
 
 const Alert = () => {
   const { pendding, success, isError } = useSelector(
@@ -51,7 +52,11 @@ const Alert = () => {
       >
         <h1>{status}</h1>
         {events?.[0] && status == "交易成功" && (
-          <a href="" target="_blank" rel="noreferrer">
+          <a href={
+              config[chainId]
+                ? config[chainId].explorerURL + "/address/" + events[0].transactionHash
+                : "#"
+            } target="_blank" rel="noreferrer">
             {events[0].transactionHash.slice(0, 6) +
               "..." +
               events[0].transactionHash.slice(60, 66)}

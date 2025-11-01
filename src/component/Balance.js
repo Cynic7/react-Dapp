@@ -93,7 +93,7 @@ const Balance = () => {
             <small>代币</small>
             <br />
             <img src={eth} />
-            {tokens?.[0]?.symbol}
+            {tokens?.[0]?.symbol || 'QHY'}
           </p>
           <p>
             <small>钱包</small>
@@ -133,7 +133,7 @@ const Balance = () => {
             <small>代币</small>
             <br />
             <img src={eth} />
-            {tokens?.[1]?.symbol}
+            {tokens?.[1]?.symbol || 'mETH'}
           </p>
           <p>
             <small>钱包</small>

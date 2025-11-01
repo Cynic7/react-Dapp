@@ -97,25 +97,25 @@ export const priceChartSelector = createSelector(
       .map((item) => initOrder(tokens, item));
 
     let groupOrder = groupBy(filterOrder, (o) =>
-      moment.unix(o.timestamp).startOf("hour").format("YYYY-MM-DD HH:mm")
+      moment.unix(o.timestamp).startOf("day").format("YYYY-MM-DD HH:mm")
     );
 
     let lastPrice = filterOrder[filterOrder.length - 1]?.price || 0;
     let lastPrice2 = filterOrder[filterOrder.length - 2]?.price || 0;
 
-    let data = Object.keys(groupOrder).map((hour) => {
-      const group = groupOrder[hour];
+    let data = Object.keys(groupOrder).map((day) => {
+      const group = groupOrder[day];
       const open = group[0];
       const high = maxBy(group, "price");
       const min = minBy(group, "price");
       const close = group[group.length - 1];
 
       return {
-        x: new Date(hour),
+        x: new Date(day),
         y: [open.price, high.price, min.price, close.price],
       };
     });
-
+    console.log('蜡烛图数据',data);
     return {
       lastPrice,
       priceChange: lastPrice - lastPrice2,

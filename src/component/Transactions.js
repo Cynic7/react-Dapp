@@ -58,7 +58,7 @@ const Transactions = () => {
                   <img src={sort} />
                 </th>
                 <th>
-                  {tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol}
+                  {tokens?.[0] && tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol}
                   <img src={sort} />
                 </th>
                 <th>操作</th>
@@ -105,7 +105,7 @@ const Transactions = () => {
                   <img src={sort} />
                 </th>
                 <th>
-                  {tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol}
+                  {tokens?.[0] && tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol}
                   <img src={sort} />
                 </th>
               </tr>

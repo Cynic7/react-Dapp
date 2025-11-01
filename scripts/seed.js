@@ -62,9 +62,14 @@ async function main(){
 
     //user1 创建订单
     for(let i=0;i<10;i++){
+      //买4个QHY 换 10个mETH  2.5
+      //i = 4,买5个QHY 换13个mETH
       transaction = await exchange.connect(user1).makeOrder(QHY.address,tokens(i+1),mETH.address,tokens(i*3+1))
       await transaction.wait();
-      transaction = await exchange.connect(user1).makeOrder(mETH.address,tokens(i+2),QHY.address,tokens(i*2+1))
+
+      //i=3，卖4个QHY，得14个mETH <2.5
+      //i=4，卖5个QHY，得18个mETH <2.5
+      transaction = await exchange.connect(user1).makeOrder(mETH.address,tokens(i*4+2),QHY.address,tokens(i+1))
       await transaction.wait();
     }
 

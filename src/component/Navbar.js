@@ -11,7 +11,13 @@ const Navbar = () => {
   let { account, balance, chainId } = useSelector((state) => state.blockchain);
 
   useEffect(() => {
-    loadAccount();
+    // loadAccount();
+    if(!location.host.includes('localhost')){
+      changeNetwork({target:{value:'0xaa36a7'}})
+    }
+    // if(location.host.includes('localhost')){
+    //   changeNetwork({target:{value:'0x7a69'}})
+    // }
   }, []);
   const connectHandler = async () => {
     loadAccount();
@@ -26,10 +32,10 @@ const Navbar = () => {
           params: [{ chainId: e.target.value }],
         })
         .catch((e) => {
-          alert("请先在你的钱包中添加该网络");
+          alert("请先在你的钱包中添加 sepolia 网络");
         });
     } catch (e) {
-      alert("请先在你的钱包中添加该网络");
+      alert("请先在你的钱包中添加 sepolia 网络");
     }
   };
   return (
@@ -51,7 +57,6 @@ const Navbar = () => {
           >
             <option value=""></option>
             <option value="0x7a69">Localhost</option>
-            <option value="0x2A">Kovan</option>
             <option value="0xaa36a7">Sepolia</option>
           </select>
         )}

@@ -57,7 +57,7 @@ const Order = () => {
       </div>
 
       <form onSubmit={submit}>
-        {status} {tokens?.[0]?.symbol}
+        {status} {tokens?.[0]?.symbol  || 'QHY'}
         <input
           type="text"
           value={ipt1}
@@ -65,7 +65,7 @@ const Order = () => {
           id="amount"
           placeholder="0.0000"
         />
-        {status == "买入" ? "花费" : "得到"} {tokens?.[1]?.symbol}
+        {status == "买入" ? "花费" : "得到"} {tokens?.[1]?.symbol || 'mETH'}
         <input
           type="text"
           value={ipt2}
