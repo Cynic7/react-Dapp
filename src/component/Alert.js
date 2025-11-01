@@ -13,6 +13,8 @@ const Alert = () => {
   const alerRef = useRef();
   const [status, setStatus] = useState("");
   const [myPadding, setMyPadding] = useState(false);
+  const chainId = useSelector((state) => state.blockchain.chainId);
+
 
   useEffect(() => {
     if (!account) return;
