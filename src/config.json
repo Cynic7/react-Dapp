@@ -12,6 +12,9 @@
         "exchange": {
             "address" : "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
         },
+        "TokenSwap": {
+            "address" : "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+        },
         "explorerURL":"#"
     },
      "11155111":{
@@ -26,6 +29,9 @@
         },
         "exchange": {
             "address" : "0x23c5f8FB07D96690743d6E23cBEf361C322F4D46"
+        },
+        "TokenSwap": {
+            "address" : "0x57Cd54F972289102e3bCE234C001c223F654C9e9"
         },
         "explorerURL":"https://sepolia.etherscan.io/"
     },

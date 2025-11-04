@@ -5,24 +5,28 @@ import Blockies from "react-blockies";
 import { useEffect } from "react";
 import config from "../config.json";
 import interactions from "../store/interactions.js";
-const { loadAccount } = interactions;
+const { loadAccount, swapToken,loadBalance, loadBlockchain } = interactions;
 
 const Navbar = () => {
   let { account, balance, chainId } = useSelector((state) => state.blockchain);
+  let TokenSwap = useSelector((state) => state.exchange.TokenSwap);
+  const tokens = useSelector((state) => state.exchange.currentToken);
+  const { contract: exchange } = useSelector((state) => state.exchange);
 
   useEffect(() => {
     // loadAccount();
-    if(!location.host.includes('localhost')){
-      changeNetwork({target:{value:'0xaa36a7'}})
+    if (!location.host.includes("localhost")) {
+      changeNetwork({ target: { value: "0xaa36a7" } });
     }
     // if(location.host.includes('localhost')){
     //   changeNetwork({target:{value:'0x7a69'}})
     // }
   }, []);
+
   const connectHandler = async () => {
     loadAccount();
   };
-  // console.log(chainId);
+
   const changeNetwork = (e) => {
     console.log(e.target.value);
     try {
@@ -31,13 +35,20 @@ const Navbar = () => {
           method: "wallet_switchEthereumChain",
           params: [{ chainId: e.target.value }],
         })
-        .catch((e) => {
+        .catch(() => {
           alert("请先在你的钱包中添加 sepolia 网络");
         });
     } catch (e) {
       alert("请先在你的钱包中添加 sepolia 网络");
     }
   };
+
+  const duihuan = async () => {
+    await swapToken(TokenSwap);
+    await loadAccount()
+    if (tokens && account && exchange) loadBalance(tokens, account, exchange);
+  };
+
   return (
     <div className="exchange__header grid">
       <div className="exchange__header--brand flex">
@@ -64,6 +75,20 @@ const Navbar = () => {
 
       <div className="exchange__header--account flex">
         {balance ? (
+          <div>
+            <button
+              style={{ width: 46, fontSize: 13 }}
+              title="用0.001 ether 兑换 100 QHY（限一次）"
+              className="button"
+              onClick={duihuan}
+            >
+              兑换QHY
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
+        {balance ? (
           <p>
             <small>余额 </small> {Number(balance).toFixed(4)}
           </p>
@@ -89,7 +114,11 @@ const Navbar = () => {
             />
           </a>
         ) : (
-          <button className="button" onClick={connectHandler}>
+          <button
+            style={{ position: "fixed", right: 7 }}
+            className="button"
+            onClick={connectHandler}
+          >
             连接账号
           </button>
         )}

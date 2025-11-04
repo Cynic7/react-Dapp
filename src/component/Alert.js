@@ -23,19 +23,19 @@ const Alert = () => {
       alerRef.current.className = "alert";
       setStatus("交易进行中...");
       setMyPadding(true)
-    } else if (success && events?.length && allevent?.length != 1 && myPadding) {
+    } else if (success && events?.length  && myPadding) {
       alerRef.current.className = "alert";
       setStatus("交易成功");
       setMyPadding(false)
       setTimeout(() => {
         alerRef.current.className = "alert alert--remove";
-      }, 3000);
+      }, 5000);
     } else if (isError) {
       alerRef.current.className = "alert";
       setStatus("交易失败");
       setTimeout(() => {
         alerRef.current.className = "alert alert--remove";
-      }, 3000);
+      }, 5000);
     } else {
       alerRef.current.className = "alert alert--remove";
     }

@@ -15,7 +15,7 @@ import Transactions from './component/Transactions.js'
 import Alert from './component/Alert.js'
 
 import interactions from './store/interactions.js'
-const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount,listenEvent } = interactions;
+const { getDispatch,loadBlockchain,loadToken,loadExchange,loadAccount,listenEvent,loadTokenSwap } = interactions;
 
 function App() {
   
@@ -28,8 +28,9 @@ function App() {
     try{
       loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
       const exchange = loadExchange(myConfig.exchange.address)
+      const tokenSwap = loadTokenSwap(myConfig.TokenSwap.address)
         //监听事件
-      listenEvent(exchange)
+      listenEvent(exchange,tokenSwap)
     }catch(e){
       console.log(e);
     }

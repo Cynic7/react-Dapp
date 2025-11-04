@@ -1,5 +1,6 @@
 import token_abi from "../abi/token_abi.json";
 import exchange_abi from "../abi/exchange_abi.json";
+import tokenSwap_abi from "../abi/tokenSwap_abi.json";
 import { ethers } from "ethers";
 let dispatch, provider, exchange;
 
@@ -51,6 +52,11 @@ export default {
     exchange = contract;
     return contract;
   },
+  loadTokenSwap: (address) => {
+    const contract = new ethers.Contract(address, tokenSwap_abi, provider);
+    dispatch({ type: "TOKENSWAP_LOADED", contract });
+    return contract;
+  },
   loadBalance: async (tokens, account, exchange) => {
     let balance_token = [];
     let balance_exchange = [];
@@ -70,7 +76,7 @@ export default {
     dispatch({ type: "TOKEN_BALANCE_LOADED", balance_token });
   },
 
-  listenEvent: (exchange) => {
+  listenEvent: (exchange, tokenSwap) => {
     exchange.on("DepositToken", (...args) => {
       dispatch({ type: "TRANSFER_SUCCESS", event: args[args.length - 1] });
     });
@@ -96,6 +102,12 @@ export default {
       let event = args[args.length - 1];
       console.log('FillOrder');
       dispatch({ type: "EXCHANGE_REQUEST_SUCCESS",requestType:'FillOrder', event, order:event.args });
+    });
+
+    tokenSwap.on("TokensSwapped", (...args) => {
+      let event = args[args.length - 1];
+      console.log('TokensSwapped',event);
+      dispatch({ type: "SWAP_REQUEST_SUCCESS", event });
     });
 
   },
@@ -192,6 +204,18 @@ export default {
       dispatch({ type: "EXCHANGE_REQUEST_FAIL",requestType:'FillOrder'  });
     }
 
-  }
+  },
+  swapToken: async(Contract)=>{
+    dispatch({ type: "SWAP_REQUEST" });
+    try{
+      const signer = await provider.getSigner()
+      let transcation = await Contract.connect(signer).swapTokens({value: ethers.utils.parseEther('0.001')})
+      await transcation.wait();
+
+    }catch(e){
+      dispatch({ type: "SWAP_REQUEST_FAIL" });
+    }
+
+  },
   
 };
