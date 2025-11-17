@@ -36,6 +36,9 @@
         "TokenSwap": {
             "address" : "0x57Cd54F972289102e3bCE234C001c223F654C9e9"
         },
+        "QhyNFT": {
+            "address" : "0xCc65aC58de601E267458B0E5adcCF15EAaB97Daa"
+        },
         "explorerURL":"https://sepolia.etherscan.io/"
     },
     "42":{

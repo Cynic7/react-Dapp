@@ -6,12 +6,13 @@ async function main() {
   const myContrct = await ethers.getContractAt('QhyNFT',config[chainId].QhyNFT.address)
   const signer = await ethers.provider.getSigner()
   const accounts = await ethers.getSigners();
+  let baseUrl = 'https://react-dapp-rkz997.dappling.network';
 
   for(let i = 1;i<=15;i++){
     let transcation = await myContrct.connect(signer).mintAndSell(accounts[0].address,JSON.stringify(
         {
           "name":'数字艺术 #00' + i,
-          "url":'/NFTs/'+i+'.jpg',
+          "url":baseUrl + '/NFTs/'+i+'.jpg',
          
         }
       ),
