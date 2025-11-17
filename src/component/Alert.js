@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { myEventSelector } from "../store/selectors.js";
 import config from "../config.json";
 
-const Alert = () => {
+const Alert = (props) => {
   const { pendding, success, isError } = useSelector(
-    (state) => state.exchange.status
+    (state) => state[props.name].status
   );
   const account = useSelector((state) => state.blockchain.account);
-  const allevent = useSelector((state) => state.exchange.event);
+  // const allevent = useSelector((state) => state.exchange.event);
   const events = useSelector(myEventSelector);
   const alerRef = useRef();
   const [status, setStatus] = useState("");
@@ -18,18 +18,18 @@ const Alert = () => {
 
   useEffect(() => {
     if (!account) return;
-
+    
     if (pendding) {
       alerRef.current.className = "alert";
       setStatus("交易进行中...");
       setMyPadding(true)
-    } else if (success && events?.length  && myPadding) {
+    } else if (success && myPadding) {
       alerRef.current.className = "alert";
       setStatus("交易成功");
       setMyPadding(false)
       setTimeout(() => {
         alerRef.current.className = "alert alert--remove";
-      }, 5000);
+      }, 8000);
     } else if (isError) {
       alerRef.current.className = "alert";
       setStatus("交易失败");
@@ -56,7 +56,7 @@ const Alert = () => {
         {events?.[0] && status == "交易成功" && (
           <a href={
               config[chainId]
-                ? config[chainId].explorerURL + "/address/" + events[0].transactionHash
+                ? config[chainId].explorerURL + "/tx/" + events[0].transactionHash
                 : "#"
             } target="_blank" rel="noreferrer">
             {events[0].transactionHash.slice(0, 6) +

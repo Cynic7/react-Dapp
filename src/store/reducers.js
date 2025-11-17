@@ -216,8 +216,32 @@ export const exchange = (
           isError: true,
         },
       };
+   
 
     default:
       return state;
   }
 };
+
+
+//NFT信息
+export const Qhy_NFT = (
+  state = {  status: {} },
+  action
+) => {
+  switch (action.type) {
+    case "QhyNFT_LOADED":
+      return {
+        ...state,
+        contract: action.contract,
+      };
+    case "QhyNFT_REQUEST":
+      return {
+        ...state,
+        status: action.status,
+      };
+    default:
+      return state;
+    }
+    
+}

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import eth from "../assets/eth.svg";
 import Blockies from "react-blockies";
 import { useEffect } from "react";
@@ -7,7 +7,7 @@ import config from "../config.json";
 import interactions from "../store/interactions.js";
 const { loadAccount, swapToken,loadBalance, loadBlockchain } = interactions;
 
-const Navbar = () => {
+const Navbar = (props) => {
   let { account, balance, chainId } = useSelector((state) => state.blockchain);
   let TokenSwap = useSelector((state) => state.exchange.TokenSwap);
   const tokens = useSelector((state) => state.exchange.currentToken);
@@ -53,7 +53,7 @@ const Navbar = () => {
     <div className="exchange__header grid">
       <div className="exchange__header--brand flex">
         <img src={logo} className="logo" />
-        <h1>QHY代币交易所</h1>
+        <h1>{props.title}</h1>
       </div>
 
       <div className="exchange__header--networks flex">
@@ -74,7 +74,7 @@ const Navbar = () => {
       </div>
 
       <div className="exchange__header--account flex">
-        {balance ? (
+        {balance && props.title == 'QHY代币交易所' ? (
           <div>
             <button
               style={{ width: 46, fontSize: 13 }}

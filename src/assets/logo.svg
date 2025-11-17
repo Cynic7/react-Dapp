@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Ultra bright gradient for maximum impact -->
+    <linearGradient id="qGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D2FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3A7BD5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF0080;stop-opacity:1" />
+    </linearGradient>
+    <!-- Intense glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    <!-- Secondary glow for extra brightness -->
+    <filter id="superGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="10" result="bigBlur"/>
+      <feMerge> 
+        <feMergeNode in="bigBlur"/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Strong background glow -->
+  <circle cx="100" cy="100" r="85" fill="url(#qGradient)" opacity="0.3"/>
+  <circle cx="100" cy="100" r="95" fill="url(#qGradient)" opacity="0.1" filter="url(#superGlow)"/>
+  
+  <!-- Q letter with maximum impact -->
+  <g transform="translate(100, 100)">
+    <!-- Multiple outer glow rings for depth -->
+    <circle cx="0" cy="0" r="65" fill="none" stroke="url(#qGradient)" stroke-width="4" opacity="0.4" filter="url(#superGlow)"/>
+    <circle cx="0" cy="0" r="60" fill="none" stroke="url(#qGradient)" stroke-width="3" opacity="0.6" filter="url(#glow)"/>
+    
+    <!-- Main outer ring of Q - much thicker -->
+    <circle cx="0" cy="0" r="55" fill="none" stroke="url(#qGradient)" stroke-width="14" filter="url(#glow)"/>
+    
+    <!-- Enhanced tail of Q - longer and thicker -->
+    <line x1="25" y1="25" x2="50" y2="50" stroke="url(#qGradient)" stroke-width="14" stroke-linecap="round" filter="url(#glow)"/>
+    
+    <!-- Enhanced center circle - more defined -->
+    <circle cx="0" cy="0" r="30" fill="none" stroke="url(#qGradient)" stroke-width="10" opacity="0.9"/>
+    
+    <!-- Larger accent dots -->
+    <circle cx="35" cy="35" r="8" fill="url(#qGradient)" opacity="1" filter="url(#glow)"/>
+    <circle cx="15" cy="15" r="4" fill="white" opacity="0.8"/>
+    
+    <!-- Highlighting for better visibility -->
+    <circle cx="-55" cy="0" r="2" fill="white" opacity="0.8"/>
+  </g>
+  
+  <!-- Strong outer glow effect -->
+  <circle cx="100" cy="100" r="100" fill="none" stroke="url(#qGradient)" stroke-width="2" opacity="0.4" filter="url(#superGlow)"/>
+</svg>

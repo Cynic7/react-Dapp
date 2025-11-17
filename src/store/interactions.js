@@ -1,6 +1,7 @@
 import token_abi from "../abi/token_abi.json";
 import exchange_abi from "../abi/exchange_abi.json";
 import tokenSwap_abi from "../abi/tokenSwap_abi.json";
+import QhyNFT_abi from "../abi/QhyNFT_abi.json";
 import { ethers } from "ethers";
 let dispatch, provider, exchange;
 
@@ -57,6 +58,60 @@ export default {
     dispatch({ type: "TOKENSWAP_LOADED", contract });
     return contract;
   },
+  loadQhyNFT: (address) => {
+    const contract = new ethers.Contract(address, QhyNFT_abi, provider);
+    dispatch({ type: "QhyNFT_LOADED", contract });
+    return contract;
+  },
+  QhyNFT_searchAll: async(myContrct)=>{
+    let data = await myContrct.queryFilter('Minted',0,'latest')
+    let sData = []
+    data = data?.map(item=>({
+      ...item.args,
+      price:ethers.utils.formatEther(item.args.price)
+    }));
+
+    for(let i=0;i<data.length;i++){
+      let item = data[i]
+      let d = await myContrct.sellList(item.tokenId.toString());
+      sData.push(d)
+    }
+    console.log('触发searchAll');
+    sData = sData.map(item=>({
+      ...item,
+      price:ethers.utils.formatEther(item.price)
+    }))
+    console.log('数据',sData);
+    return sData
+  },
+
+  QhyNFT_setSell:async (myContrct, _tokenId, _isSell, _price)=>{
+    dispatch({ type: "QhyNFT_REQUEST", status:{pendding:true,success:false} });
+
+    try{
+      const signer = await provider.getSigner()
+      let transcation = await myContrct.connect(signer).setSell(_tokenId,_isSell,ethers.utils.parseEther(_price) )
+      await transcation.wait()
+    }catch(e){
+      dispatch({ type: "QhyNFT_REQUEST", status:{pendding:false,success:false,isError:true} });
+    }
+    
+  },
+  QhyNFT_transfer:async (myContrct, from, to, _tokenId, _price)=>{
+    dispatch({ type: "QhyNFT_REQUEST", status:{pendding:true,success:false} });
+
+    try{
+      const signer = await provider.getSigner()
+      console.log(myContrct.connect(signer).transferFrom);
+      let transcation = await myContrct.connect(signer).transferFrom(from, to, _tokenId,{value:ethers.utils.parseEther(_price)})
+      await transcation.wait()
+    }catch(e){
+      console.log(e);
+      dispatch({ type: "QhyNFT_REQUEST", status:{pendding:false,success:false,isError:true} });
+    }
+    
+  },
+
   loadBalance: async (tokens, account, exchange) => {
     let balance_token = [];
     let balance_exchange = [];

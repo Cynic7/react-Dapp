@@ -21,6 +21,26 @@ async function main(){
     const exchange = await Exchange.deploy(accounts[1].address,1);
     await exchange.deployed();
     console.log('exchange部署地址：'+exchange.address);
+
+    const TokenSwap = await ethers.getContractFactory("TokenSwap");
+    const signer = await ethers.provider.getSigner();
+
+    const tokenSwap = await TokenSwap.deploy(QHY.address);
+    await tokenSwap.deployed();
+    console.log("TokenSwap部署地址：" + tokenSwap.address);
+    
+    let transaction = await QHY.connect(signer).transfer(
+      tokenSwap.address,
+      ethers.utils.parseEther("10000")
+    );
+    await transaction.wait();
+
+    const QhyNFT = await ethers.getContractFactory("QhyNFT");
+  const Qhy_NFT = await QhyNFT.deploy('QhyNFT','QhyNFT');
+  await Qhy_NFT.deployed();
+
+  console.log("Qhy_NFT部署地址：" + Qhy_NFT.address);
+
 }
 
 main().catch((error) => {

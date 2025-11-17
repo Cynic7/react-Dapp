@@ -3,12 +3,13 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 /* Import Reducers */
-import { blockchain, tokens, exchange } from './reducers'
+import { blockchain, tokens, exchange, Qhy_NFT } from './reducers'
 
 const reducer = combineReducers({
   blockchain,
   tokens,
   exchange,
+  Qhy_NFT
 })
 
 const initialState = {}
