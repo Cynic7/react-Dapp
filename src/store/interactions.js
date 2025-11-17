@@ -73,14 +73,22 @@ export default {
 
     for(let i=0;i<data.length;i++){
       let item = data[i]
-      let d = await myContrct.sellList(item.tokenId.toString());
-      sData.push(d)
+      myContrct.sellList(item.tokenId.toString()).then(res=>{
+        sData.push(res)
+      })
     }
-    console.log('触发searchAll');
+    await new Promise((resolve)=>{
+      let interval = setInterval(() => {
+        if(data.length == sData.length){
+          clearInterval(interval)
+          resolve()
+        }
+      }, 50);
+    })
     sData = sData.map(item=>({
       ...item,
       price:ethers.utils.formatEther(item.price)
-    }))
+    })).sort((a,b)=>a.tokenId - b.tokenId)
     console.log('数据',sData);
     return sData
   },
