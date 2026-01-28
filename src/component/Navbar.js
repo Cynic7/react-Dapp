@@ -14,10 +14,10 @@ const Navbar = (props) => {
   const { contract: exchange } = useSelector((state) => state.exchange);
 
   useEffect(() => {
-    // loadAccount();
-    if (!location.host.includes("localhost")) {
-      changeNetwork({ target: { value: "0xaa36a7" } });
-    }
+    loadAccount();
+    // if (!location.host.includes("localhost")) {
+    //   changeNetwork({ target: { value: "0xaa36a7" } });
+    // }
     // if(location.host.includes('localhost')){
     //   changeNetwork({target:{value:'0x7a69'}})
     // }
@@ -69,6 +69,7 @@ const Navbar = (props) => {
             <option value=""></option>
             <option value="0x7a69">Localhost</option>
             <option value="0xaa36a7">Sepolia</option>
+            <option value="0x13882">Polygon Amoy</option>
           </select>
         )}
       </div>

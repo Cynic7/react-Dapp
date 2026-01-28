@@ -167,11 +167,14 @@ export default {
       dispatch({ type: "EXCHANGE_REQUEST_SUCCESS",requestType:'FillOrder', event, order:event.args });
     });
 
-    tokenSwap.on("TokensSwapped", (...args) => {
-      let event = args[args.length - 1];
-      console.log('TokensSwapped',event);
-      dispatch({ type: "SWAP_REQUEST_SUCCESS", event });
-    });
+    console.log(111,tokenSwap);
+    if(tokenSwap){
+      tokenSwap.on("TokensSwapped", (...args) => {
+        let event = args[args.length - 1];
+        console.log('TokensSwapped',event);
+        dispatch({ type: "SWAP_REQUEST_SUCCESS", event });
+      });
+    }
 
   },
 
@@ -228,20 +231,106 @@ export default {
   },
 
   loadAllOrder: async(exchange)=>{
-    const events = await exchange?.queryFilter('MakeOrder',0,'latest')
-    const events_cancel = await exchange?.queryFilter('CancelOrder',0,'latest')
-    const events_fill = await exchange?.queryFilter('FillOrder',0,'latest')
-    if(!events)return;
-    console.log('events',events);
+    try{
+      if(!provider)return
+      let num = await provider.getBlock();
+      num = num.number
+      console.log('当前区块号：',num);
+      
+      // 定义两种查询方法
+      // 方法1：分批从后向前查询
+      const batchQuery = async () => {
+        console.log('开始分批查询');
+        // 分批查询的区块大小
+        const batchSize = 100000;
+        // 存储所有事件的数组
+        let allMakeOrderEvents = [];
+        let allCancelOrderEvents = [];
+        let allFillOrderEvents = [];
+        
+        // 从末尾开始向前查询
+        let currentEndBlock = num;
+        let currentStartBlock = Math.max(0, num - batchSize);
+        
+        while(currentStartBlock >= 0){
+          console.log(`分批查询区块范围：${currentStartBlock} - ${currentEndBlock}`);
+          
+          // 查询当前批次的事件
+          const makeOrderEvents = await exchange?.queryFilter('MakeOrder', currentStartBlock, currentEndBlock);
+          const cancelOrderEvents = await exchange?.queryFilter('CancelOrder', currentStartBlock, currentEndBlock);
+          const fillOrderEvents = await exchange?.queryFilter('FillOrder', currentStartBlock, currentEndBlock);
+          
+          if(cancelOrderEvents && cancelOrderEvents.length > 0){
+            allCancelOrderEvents = [...allCancelOrderEvents, ...cancelOrderEvents];
+          }
+          if(fillOrderEvents && fillOrderEvents.length > 0){
+            allFillOrderEvents = [...allFillOrderEvents, ...fillOrderEvents];
+          }
 
-    let allOrders = events?.map(item=>item.args)
-    let cancelOrders = events_cancel?.map(item=>item.args)
-    let fillOrders = events_fill?.map(item=>item.args)
+          // 将当前批次的事件添加到总数组中
+          if(makeOrderEvents && makeOrderEvents.length > 0){
+            allMakeOrderEvents = [...allMakeOrderEvents, ...makeOrderEvents];
+            
+            // 检查是否有 orderId 为 1 的数据
+            const hasOrderId1 = makeOrderEvents.some(event => {
+              return event.args && event.args.orderId && event.args.orderId.toString() === '1';
+            });
+            
+            if(hasOrderId1){
+              console.log('分批查询：找到 orderId 为 1 的数据，停止查询');
+              break;
+            }
+          }
+          
+          // 更新下一批次的区块范围
+          currentEndBlock = currentStartBlock - 1;
+          currentStartBlock = Math.max(0, currentStartBlock - batchSize);
+        }
+        
+        console.log('分批查询完成');
+        return {
+          makeOrderEvents: allMakeOrderEvents,
+          cancelOrderEvents: allCancelOrderEvents,
+          fillOrderEvents: allFillOrderEvents,
+          type: 'batch'
+        };
+      };
+      
+      // 方法2：直接查询 0 到 latest
+      const directQuery = async () => {
+        console.log('开始直接查询');
+        
+        // 直接查询所有区块
+        const makeOrderEvents = await exchange?.queryFilter('MakeOrder', 0, 'latest');
+        const cancelOrderEvents = await exchange?.queryFilter('CancelOrder', 0, 'latest');
+        const fillOrderEvents = await exchange?.queryFilter('FillOrder', 0, 'latest');
+        
+        console.log('直接查询完成');
+        return {
+          makeOrderEvents: makeOrderEvents || [],
+          cancelOrderEvents: cancelOrderEvents || [],
+          fillOrderEvents: fillOrderEvents || [],
+          type: 'direct'
+        };
+      };
+      
+      // 同时运行两个查询，使用先完成的结果
+      const result = await Promise.race([batchQuery(), directQuery()]);
+      console.log(`使用 ${result.type} 查询的结果，共找到 ${result.makeOrderEvents.length} 个 MakeOrder 事件`);
+      
+      if(!result.makeOrderEvents || result.makeOrderEvents.length === 0)return;
+      
+      let allOrders = result.makeOrderEvents?.map(item=>item.args)
+      let cancelOrders = result.cancelOrderEvents?.map(item=>item.args)
+      let fillOrders = result.fillOrderEvents?.map(item=>item.args)
 
-    console.log('allOrders',allOrders);
-    dispatch({ type: "ALL_ORDER_LOAD",allOrders });
-    dispatch({ type: "CANCEL_ORDER_LOAD",cancelOrders });
-    dispatch({ type: "FILL_ORDER_LOAD",fillOrders });
+      console.log('allOrders',allOrders);
+      dispatch({ type: "ALL_ORDER_LOAD",allOrders });
+      dispatch({ type: "CANCEL_ORDER_LOAD",cancelOrders });
+      dispatch({ type: "FILL_ORDER_LOAD",fillOrders });
+    }catch(e){
+      console.log(e);
+    }
 
   },
   cancelOrder: async(order)=>{

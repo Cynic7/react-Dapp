@@ -14,5 +14,15 @@ module.exports = {
       url: "http://127.0.0.1:8545",
       chainId: 31337, // Hardhat 本地网络的默认链ID :cite[7]
     },
+    arbitrumSepolia:{
+      chainId: 421614,
+      url: "https://arbitrum-sepolia.infura.io/v3/"+process.env.INFURA_API_KEY,
+      accounts: process.env.PRIVATE_KES.split(',') // 从环境变量读取部署账户私钥
+    },
+    amoy: {
+      url: `https://polygon-amoy.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: process.env.PRIVATE_KES.split(','),
+      chainId: 80002,
+    }
   }
 };

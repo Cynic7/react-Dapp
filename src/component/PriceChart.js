@@ -35,7 +35,7 @@ const PriceChart = () => {
         <Chart
           type="candlestick"
           options={options}
-          series={priceSeries ? priceSeries.series : series}
+          series={priceSeries ? priceSeries.series : []}
           width={"100%"}
           height={"100%"}
         />

@@ -17,10 +17,19 @@ async function main(){
     const mDAI = await Token.deploy('mDAI','mDAI','1000000');
     await mDAI.deployed();
     console.log('mDAI部署地址：'+mDAI.address);
+
+    const currentGasPrice = await ethers.provider.getGasPrice();
+    // console.log('当前gas费用：'+currentGasPrice.toString());
+    //取当前gas费用的70%
+    const lowGasPrice = currentGasPrice.mul(7).div(10);
     
-    const exchange = await Exchange.deploy(accounts[1].address,1);
+    const exchange = await Exchange.deploy(accounts[1].address, 1, {
+        gasPrice: lowGasPrice,
+        gasLimit: 2500000
+    });
     await exchange.deployed();
     console.log('exchange部署地址：'+exchange.address);
+
 
     const TokenSwap = await ethers.getContractFactory("TokenSwap");
     const signer = await ethers.provider.getSigner();

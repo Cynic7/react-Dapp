@@ -41,6 +41,18 @@
         },
         "explorerURL":"https://sepolia.etherscan.io/"
     },
+    "80002":{
+        "QHY": {
+            "address" : "0xEb86C95f8F6eC4a5357faC2018F138CEE62EaB6d"
+        },
+        "mETH": {
+            "address" : "0xd2564e49D6a728f78d7Cc39f8279450845DFBed1"
+        },
+        "exchange": {
+            "address" : "0x63a980588d8827618eF75Fbaa6F3472C3cef88D1"
+        },
+        "explorerURL":"https://amoy.polygonscan.com/"
+    },
     "42":{
         "explorerURL":"https://kovan.etherscan.io/"
     }

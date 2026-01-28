@@ -23,10 +23,18 @@ function Exchange() {
     let myConfig = config[chainId];
     console.log(chainId);
     try{
-      loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
+      if(myConfig.mDAI){
+        loadToken([myConfig.QHY.address,myConfig.mETH.address,myConfig.mDAI.address])
+      }else{
+        loadToken([myConfig.QHY.address,myConfig.mETH.address])
+      }
+
       const exchange = loadExchange(myConfig.exchange.address)
-      const tokenSwap = loadTokenSwap(myConfig.TokenSwap.address)
-        //监听事件
+      let tokenSwap
+      if(myConfig.TokenSwap){
+        tokenSwap = loadTokenSwap(myConfig.TokenSwap.address)
+      }
+      //监听事件
       listenEvent(exchange,tokenSwap)
     }catch(e){
       console.log(e);
