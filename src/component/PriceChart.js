@@ -15,7 +15,7 @@ const PriceChart = () => {
     <div className="component exchange__chart">
       <div className="component__header flex-between">
         <div className="flex">
-          <h2>{tokens && tokens?.[0].symbol + " / " + tokens?.[1].symbol}</h2>
+          <h2>{tokens && tokens?.[0].symbol + " / " + tokens?.[1].symbol || 'QHY / mDAI'}</h2>
 
           <div className="flex">
             {priceSeries?.priceChange > 0 ? (
@@ -43,7 +43,7 @@ const PriceChart = () => {
       <Chart
           type="candlestick"
           options={options}
-          series={priceSeries ? priceSeries.series : series}
+          series={account && priceSeries ? priceSeries.series : series}
           width={"100%"}
           height={"100%"}
         />

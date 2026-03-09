@@ -10,7 +10,7 @@ const OrderBook = () => {
   const exchange = useSelector((state) => state.exchange.contract);
   const account = useSelector((state) => state.blockchain.account);
 
-  const orderBook = useSelector(orderBookSelector) || 
+  const orderBook = account ? useSelector(orderBookSelector) :
     {
       sellOrder: [
         {orderId: "1", token0Value: 1, token1Value: 2, price: 3, type: "卖出"},

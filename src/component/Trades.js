@@ -4,7 +4,8 @@ import { fillorderSelector } from "../store/selectors.js";
 
 const Trades = () => {
   const tokens = useSelector((state) => state.exchange.currentToken);
-  const orders = useSelector(fillorderSelector) || 
+  const account = useSelector((state) => state.exchange.account);
+  const orders = account ? useSelector(fillorderSelector) :
   [
     {time: '2025-05-03', token0Value: 1, token1Value: 2, price: 3, type: "买入", orderId: "1"},
     {time: '2025-05-04', token0Value: 2, token1Value: 4, price: 2.5, type: "卖出", orderId: "2"},
