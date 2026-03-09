@@ -1,6 +1,6 @@
 import './App.css';
 import MyNFT from './MyNFT.js'
-import Exchange from './Exchange.js'
+import Exchange from './exchange.js'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {

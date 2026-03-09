@@ -29,7 +29,7 @@ const PriceChart = () => {
       </div>
 
       {/* Price chart goes here */}
-      {!account ? (
+      {/* {!account ? (
         <Banner text="请连接您的钱包" />
       ) : (
         <Chart
@@ -39,7 +39,14 @@ const PriceChart = () => {
           width={"100%"}
           height={"100%"}
         />
-      )}
+      )} */}
+      <Chart
+          type="candlestick"
+          options={options}
+          series={priceSeries ? priceSeries.series : series}
+          width={"100%"}
+          height={"100%"}
+        />
     </div>
   );
 };

@@ -251,8 +251,8 @@ export default {
         // 从末尾开始向前查询
         let currentEndBlock = num;
         let currentStartBlock = Math.max(0, num - batchSize);
-        
-        while(currentStartBlock >= 0){
+        console.log(122,currentEndBlock);
+        while(currentStartBlock >= 0 && currentEndBlock != -1){
           console.log(`分批查询区块范围：${currentStartBlock} - ${currentEndBlock}`);
           
           // 查询当前批次的事件

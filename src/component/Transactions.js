@@ -7,7 +7,14 @@ import { myOrderSelector, myFilledOrderSelector } from "../store/selectors.js";
 
 const Transactions = () => {
   const tokens = useSelector((state) => state.exchange.currentToken);
-  const orders = useSelector(myOrderSelector);
+  const orders = useSelector(myOrderSelector) || 
+  [
+    {token0Value: 1, token1Value: 2, price: 3, type: "买入", orderId: "1"},
+    {token0Value: 2, token1Value: 4, price: 2.5, type: "卖出", orderId: "2"},
+    {token0Value: 0.5, token1Value: 1.5, price: 3.2, type: "买入", orderId: "3"},
+    {token0Value: 3, token1Value: 9, price: 3.0, type: "卖出", orderId: "4"},
+    {token0Value: 1.5, token1Value: 4.5, price: 3.1, type: "买入", orderId: "5"}
+  ];
   const myFilledOrder = useSelector(myFilledOrderSelector);
   const [status, setStatus] = useState("order");
   const depositRef = useRef();
@@ -54,11 +61,11 @@ const Transactions = () => {
                   <img src={sort} />
                 </th>
                 <th>
-                  {tokens?.[0]?.symbol}
+                  {tokens?.[0]?.symbol || 'QHY'}
                   <img src={sort} />
                 </th>
                 <th>
-                  {tokens?.[0] && tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol}
+                  {tokens?.[0] && tokens?.[0]?.symbol + " / " + tokens?.[1]?.symbol || 'QHY/mETH'}
                   <img src={sort} />
                 </th>
                 <th>操作</th>
