@@ -25,7 +25,7 @@ const OrderBook = () => {
         {orderId: "8", token0Value: 1.2, token1Value: 3.6, price: 3.0, type: "买入"},
         {orderId: "9", token0Value: 0.5, token1Value: 1.5, price: 3.2, type: "买入"},
         {orderId: "10", token0Value: 1.5, token1Value: 4.5, price: 3.1, type: "买入"},
-      ],
+      ]
     }
 
   ;
