@@ -10,25 +10,24 @@ const OrderBook = () => {
   const exchange = useSelector((state) => state.exchange.contract);
   const account = useSelector((state) => state.blockchain.account);
 
-  const orderBook = account ? useSelector(orderBookSelector) :
-    {
-      sellOrder: [
-        {orderId: "1", token0Value: 1, token1Value: 2, price: 3, type: "卖出"},
-        {orderId: "2", token0Value: 2, token1Value: 4, price: 2.5, type: "卖出"},
-        {orderId: "3", token0Value: 3, token1Value: 9, price: 3.0, type: "卖出"},
-        {orderId: "4", token0Value: 4, token1Value: 12, price: 3.0, type: "卖出"},
-        {orderId: "5", token0Value: 2.5, token1Value: 7.5, price: 3.0, type: "卖出"},
-        {orderId: "6", token0Value: 3.5, token1Value: 10.5, price: 3.0, type: "卖出"},
-      ],
-      buyOrder: [
-        {orderId: "7", token0Value: 0.8, token1Value: 2.4, price: 3.0, type: "买入"},
-        {orderId: "8", token0Value: 1.2, token1Value: 3.6, price: 3.0, type: "买入"},
-        {orderId: "9", token0Value: 0.5, token1Value: 1.5, price: 3.2, type: "买入"},
-        {orderId: "10", token0Value: 1.5, token1Value: 4.5, price: 3.1, type: "买入"},
-      ]
-    }
-
-  ;
+  const orderBookFromStore = useSelector(orderBookSelector);
+  const defaultOrderBook = {
+    sellOrder: [
+      {orderId: "1", token0Value: 1, token1Value: 2, price: 3, type: "卖出"},
+      {orderId: "2", token0Value: 2, token1Value: 4, price: 2.5, type: "卖出"},
+      {orderId: "3", token0Value: 3, token1Value: 9, price: 3.0, type: "卖出"},
+      {orderId: "4", token0Value: 4, token1Value: 12, price: 3.0, type: "卖出"},
+      {orderId: "5", token0Value: 2.5, token1Value: 7.5, price: 3.0, type: "卖出"},
+      {orderId: "6", token0Value: 3.5, token1Value: 10.5, price: 3.0, type: "卖出"},
+    ],
+    buyOrder: [
+      {orderId: "7", token0Value: 0.8, token1Value: 2.4, price: 3.0, type: "买入"},
+      {orderId: "8", token0Value: 1.2, token1Value: 3.6, price: 3.0, type: "买入"},
+      {orderId: "9", token0Value: 0.5, token1Value: 1.5, price: 3.2, type: "买入"},
+      {orderId: "10", token0Value: 1.5, token1Value: 4.5, price: 3.1, type: "买入"},
+    ]
+  };
+  const orderBook = account ? orderBookFromStore : defaultOrderBook;
 
   const fillOrderHandler = async (order) => {
     await fillOrder(order);
